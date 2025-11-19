@@ -48,6 +48,10 @@ userRouter.get('/:id', async (req, res) => {
   }
 });
 
+// login
+// registracija
+// reset password
+
 module.exports = {
   userRouter,
 };

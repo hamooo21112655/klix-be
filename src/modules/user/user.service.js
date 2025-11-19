@@ -70,6 +70,9 @@ const getUsersByPhoneNumberService = async (phoneNumber) => {
   return getUsersByPhoneNumber(phoneNumber);
 };
 
+// soft delete-usera
+// alter tabele - migracija - deletedAt kolona
+
 module.exports = {
   createUserService,
   updateUserService,
