@@ -58,8 +58,9 @@ const getUsersService = async (page, limit) => {
 };
 
 const getUserByIdService = async (id) => {
+  /// id mora biti int - validacija
   const user = await getUserById(id);
-  const { error } = ensureUserExists(user, id);
+  const { error } = ensureUserExists(user, id); // errorExist umjesto error
   if (error) {
     throw throwUserNotFoundError(error);
   }
