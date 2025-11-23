@@ -7,7 +7,7 @@ const {
   createUserSchema,
   isPhoneNumberTaken,
 } = require('./validations/create-user.validations.js');
-const { ensureUserExists } = require('./validations/get-user-by-id.validations.js');
+const { ensureUserExists, getUserSchema, isUserIdValid } = require('./validations/get-user-by-id.validations.js');
 const { getUsersSchema } = require('./validations/get-users.validations.js');
 const {
   throwInvalidLimitOrPageError,
@@ -15,6 +15,8 @@ const {
   throwPhoneNumberTakenError,
   throwInvalidUserError,
   throwEmailTakenError,
+  throwUserWithNonIntegerId,
+  throwInvalidUserIdError,
 } = require('./exceptions/bad-user-request.exception');
 const { getUsersByPhoneNumber } = require('./repository/query/get-user-by-phone-number.query');
 const { isEmailTaken } = require('./validations/create-user.validations');
@@ -57,13 +59,12 @@ const getUsersService = async (page, limit) => {
   return getAllUsers(page, limit);
 };
 
-const getUserByIdService = async (id) => {
-  /// id mora biti int - validacija
+const getUserByIdService = async (rawId) => {
+  const id = Number(rawId);
+  if (isUserIdValid(id)) throwInvalidUserIdError();
   const user = await getUserById(id);
   const { error } = ensureUserExists(user, id); // errorExist umjesto error
-  if (error) {
-    throw throwUserNotFoundError(error);
-  }
+  if (error) throwUserNotFoundError(error);
   return user;
 };
 

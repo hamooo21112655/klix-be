@@ -11,6 +11,11 @@ const ensureUserExists = (user, id) => {
   };
 };
 
+const isUserIdValid = (id) => {
+  return Number.isNaN(id) || !Number.isInteger(id);
+}
+
 module.exports = {
   ensureUserExists,
+  isUserIdValid
 };

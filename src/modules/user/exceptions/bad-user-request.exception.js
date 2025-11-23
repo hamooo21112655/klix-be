@@ -18,10 +18,15 @@ const throwInvalidUserError = (error) => {
   throw new Error(error.details[0].message);
 };
 
+const throwInvalidUserIdError = () => {
+  throw new Error("Id must be integer");
+};
+
 module.exports = {
   throwInvalidLimitOrPageError,
   throwPhoneNumberTakenError,
   throwUserNotFoundError,
   throwInvalidUserError,
   throwEmailTakenError,
+  throwInvalidUserIdError
 };

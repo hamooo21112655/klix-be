@@ -41,9 +41,9 @@ userRouter.put('/:id', async (req, res) => {
 
 userRouter.get('/:id', async (req, res) => {
   try {
-    const user = await getUserByIdService(parseInt(req.params.id, 10));
+    const rawId = req.params.id;
+    const user = await getUserByIdService(rawId);
     return res.status(200).json(user);
-    const test = getTest1();
   } catch (err) {
     return res.status(err.status || 400).json({ error: err.message });
   }
