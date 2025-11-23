@@ -29,10 +29,10 @@ userRouter.get('/', async (req, res) => {
 });
 
 userRouter.put('/:id', async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const rawId = req.params.id;
   try {
-    const user = await getUserByIdService(id);
-    const updatedUser = await updateUserService(user, req.body);
+    // const user = await getUserByIdService(id);
+    const updatedUser = await updateUserService(rawId, req.body);
     return res.status(200).json({ message: 'User updated successfully', updatedUser });
   } catch (err) {
     return res.status(err.status || 400).json({ error: err.message });

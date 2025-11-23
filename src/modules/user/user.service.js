@@ -7,7 +7,7 @@ const {
   createUserSchema,
   isPhoneNumberTaken,
 } = require('./validations/create-user.validations.js');
-const { ensureUserExists, getUserSchema, isUserIdValid } = require('./validations/get-user-by-id.validations.js');
+const { ensureUserExists, getUserSchema, isUserIdValid, isUserIdInvalid } = require('./validations/get-user-by-id.validations.js');
 const { getUsersSchema } = require('./validations/get-users.validations.js');
 const {
   throwInvalidLimitOrPageError,
@@ -23,31 +23,28 @@ const { isEmailTaken } = require('./validations/create-user.validations');
 const { getUsersByEmail } = require('./repository/query/get-user-by-email.query');
 
 const createUserService = async (userDTO) => {
-  const usersByPhoneNumber = await getUsersByPhoneNumberService(userDTO.phone_number);
-  const usersByEmail = await getUsersByEmail(userDTO.email);
-  if (isPhoneNumberTaken(usersByPhoneNumber)) {
-    throwPhoneNumberTakenError();
-  }
-  if (isEmailTaken(usersByEmail)) {
-    throwEmailTakenError();
-  }
+  const getUsersByPhoneNumber = await getUsersByPhoneNumberService(userDTO.phone_number);
+  if (isPhoneNumberTaken(getUsersByPhoneNumber)) throwPhoneNumberTakenError();
+
+  const getUsersByEmail = await getUsersByEmailService(userDTO.email);
+  if (isEmailTaken(getUsersByEmail)) throwEmailTakenError();
+  
   const { error } = createUserSchema.validate(userDTO);
-  if (error) {
-    throwInvalidUserError(error);
-  }
+  if (error) throwInvalidUserError(error);
   return createUser(userDTO);
 };
 
-const updateUserService = async (existingUser, newUser) => {
-  const usersByPhoneNumber = await getUsersByPhoneNumberService(newUser.phone_number);
-  if (isPhoneNumberTaken(usersByPhoneNumber)) {
-    throwPhoneNumberTakenError();
-  }
+const updateUserService = async (rawId, newUser) => {
+  const getUsersByPhoneNumber = await getUsersByPhoneNumberService(newUser.phone_number);
+  if (isPhoneNumberTaken(getUsersByPhoneNumber)) throwPhoneNumberTakenError();
+
+  const getUsersByEmail = await getUsersByEmailService(newUser.email);
+  if (isEmailTaken(getUsersByEmail)) throwEmailTakenError();
+
   const { error } = createUserSchema.validate(newUser);
-  if (error) {
-    throwInvalidUserError(error);
-  }
-  return updateUser(existingUser, newUser);
+  if (error) throwInvalidUserError(error);
+  const userById = await getUserByIdService(rawId);
+  return updateUser(userById, newUser);
 };
 
 const getUsersService = async (page, limit) => {
@@ -61,7 +58,7 @@ const getUsersService = async (page, limit) => {
 
 const getUserByIdService = async (rawId) => {
   const id = Number(rawId);
-  if (isUserIdValid(id)) throwInvalidUserIdError();
+  if (isUserIdInvalid(id)) throwInvalidUserIdError();
   const user = await getUserById(id);
   const { error } = ensureUserExists(user, id); // errorExist umjesto error
   if (error) throwUserNotFoundError(error);
@@ -70,6 +67,10 @@ const getUserByIdService = async (rawId) => {
 
 const getUsersByPhoneNumberService = async (phoneNumber) => {
   return getUsersByPhoneNumber(phoneNumber);
+};
+
+const getUsersByEmailService = async (email) => {
+  return getUsersByEmail(email);
 };
 
 // soft delete-usera
