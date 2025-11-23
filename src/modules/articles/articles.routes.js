@@ -30,10 +30,9 @@ articleRouter.get('/', async (req, res) => {
 });
 
 articleRouter.put('/:id', async (req, res) => {
-  const id = parseInt(req.params.id, 10);
-
+  const rawId = req.params.id
   try {
-    const articleToBeUpdated = await getArticleByIdService(id);
+    const articleToBeUpdated = await getArticleByIdService(rawId);
     const updatedArticle = await updateArticleService(articleToBeUpdated, req.body);
     return res.status(200).json({ message: 'Article updated successfully', updatedArticle });
   } catch (err) {
@@ -42,12 +41,12 @@ articleRouter.put('/:id', async (req, res) => {
 });
 
 articleRouter.get('/:id', async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const rawId = req.params.id;
   try {
-    const article = await getArticleByIdService(id);
+    const article = await getArticleByIdService(rawId);
     return res.status(200).json(article);
   } catch (err) {
-    return res.status(err.status).json({ error: err.message });
+    return res.status(err.status || 400).json({ error: err.message });
   }
 });
 
