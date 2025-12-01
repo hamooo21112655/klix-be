@@ -19,7 +19,7 @@ services:
       - klix-network
 
   db:
-    image: postgres:17.6-alpine3.22
+    image: postgres:17-alpine
     container_name: postgres
     ports:
       - "${POSTGRES_PORT}:5432"      

@@ -11,7 +11,8 @@
     "db:migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",
     "db:seed": "npx sequelize-cli db:seed:all",
     "db:seed:undo": "npx sequelize-cli db:seed:undo:all",
-    "docker-up": "docker compose up"
+    "docker-up": "docker compose up -d",
+    "docker:down":"docker compose down -v"
   },
   "keywords": [],
   "author": "",
