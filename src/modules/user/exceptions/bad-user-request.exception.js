@@ -1,32 +1,29 @@
-const throwInvalidLimitOrPageError = (error) => {
+const throwInvalidLimitOrPageError = error => {
   throw new Error(error.details[0].message);
 };
 
-const throwPhoneNumberTakenError = () => {
-  throw new Error('Phone number already taken');
+const throwEmailOrPhoneNumberTakenError = () => {
+  throw new Error('Email or phone number already taken');
 };
 
-const throwEmailTakenError = () => {
-  throw new Error('Email already taken');
+const throwUserNotFoundError = error => {
+  const userNotFoundError = new Error(error.message);
+  userNotFoundError.status = 404;
+  throw userNotFoundError;
 };
 
-const throwUserNotFoundError = (error) => {
-  throw new Error(error.message);
-};
-
-const throwInvalidUserError = (error) => {
+const throwInvalidUserError = error => {
   throw new Error(error.details[0].message);
 };
 
-const throwInvalidUserIdError = () => {
-  throw new Error("Id must be integer");
+const throwInvalidUserIdError = error => {
+  throw new Error(error.details[0].message);
 };
 
 module.exports = {
   throwInvalidLimitOrPageError,
-  throwPhoneNumberTakenError,
   throwUserNotFoundError,
   throwInvalidUserError,
-  throwEmailTakenError,
-  throwInvalidUserIdError
+  throwInvalidUserIdError,
+  throwEmailOrPhoneNumberTakenError
 };

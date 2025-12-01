@@ -18,32 +18,30 @@ userRouter.post('/', async (req, res) => {
 });
 
 userRouter.get('/', async (req, res) => {
-  const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 10;
+  const { page: rawPage = 1, limit: rawLimit = 20 } = req.query;
   try {
-    const users = await getUsersService(page, limit);
+    const users = await getUsersService(rawPage, rawLimit);
     return res.status(200).json(users);
   } catch (err) {
     return res.status(err.status || 400).json({ error: err.message });
   }
 });
 
-userRouter.put('/:id', async (req, res) => {
+userRouter.get('/:id', async (req, res) => {
   const rawId = req.params.id;
   try {
-    // const user = await getUserByIdService(id);
-    const updatedUser = await updateUserService(rawId, req.body);
-    return res.status(200).json({ message: 'User updated successfully', updatedUser });
+    const user = await getUserByIdService(rawId);
+    return res.status(200).json(user);
   } catch (err) {
     return res.status(err.status || 400).json({ error: err.message });
   }
 });
 
-userRouter.get('/:id', async (req, res) => {
+userRouter.put('/:id', async (req, res) => {
+  const rawId = req.params.id; 
   try {
-    const rawId = req.params.id;
-    const user = await getUserByIdService(rawId);
-    return res.status(200).json(user);
+    const updatedUser = await updateUserService(rawId, req.body);
+    return res.status(200).json({ message: 'User updated successfully', updatedUser });
   } catch (err) {
     return res.status(err.status || 400).json({ error: err.message });
   }
