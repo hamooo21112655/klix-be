@@ -9,6 +9,7 @@ const {
 const userRouter = express.Router();
 
 userRouter.post('/', async (req, res) => {
+  console.log("added neww user")
   try {
     const newUser = await createUserService(req.body);
     return res.status(200).json({ message: 'Added new user', newUser });
