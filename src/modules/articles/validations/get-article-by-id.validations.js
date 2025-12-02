@@ -11,6 +11,9 @@ const ensureArticleExists = (article, id) => {
   };
 };
 
+const isArticleIdInvalid = id => Number.isNaN(id) || !Number.isInteger(id);
+
 module.exports = {
   ensureArticleExists,
+  isArticleIdInvalid
 };

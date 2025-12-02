@@ -3,11 +3,12 @@ const { createArticle } = require('./repository/commands/create-article.commands
 const { updateArticle } = require('./repository/commands/update-article.commands');
 const { getArticles } = require('./repository/query/get-articles.query');
 const { getArticleById } = require('./repository/query/get-article-by-id.query');
-const { ensureArticleExists } = require('./validations/get-article-by-id.validations');
+const { ensureArticleExists, isArticleIdValid, isArticleIdInvalid } = require('./validations/get-article-by-id.validations');
 const { getArticlesSchema } = require('./validations/get-articles.validations');
 const {
   throwInvalidArticleError,
   throwArticleNotFoundError,
+  throwInvalidArticleIdError,
 } = require('./exceptions/bad-article-request.exception');
 const { throwInvalidLimitOrPageError } = require('../user/exceptions/bad-user-request.exception');
 
@@ -36,7 +37,9 @@ const getAllArticlesService = async (page, limit) => {
   return getArticles(page, limit);
 };
 
-const getArticleByIdService = async (articleId) => {
+const getArticleByIdService = async (rawId) => {
+  const articleId = Number(rawId);
+  if (isArticleIdInvalid(articleId)) throwInvalidArticleIdError();
   const article = await getArticleById(articleId);
   const { error } = ensureArticleExists(article, articleId);
   if (error) {
