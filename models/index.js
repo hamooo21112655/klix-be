@@ -1,4 +1,6 @@
 'use strict';
+// TODO: napraviti prod, staging i dev grane za github
+// TODO: treba citati iz process.env na liniji 14
 
 const fs = require('fs');
 const path = require('path');
@@ -9,7 +11,7 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 
 // Load config from config.json
-const config = require(path.join(__dirname, '../config/config.json'))[env];
+const config = require(path.join(__dirname, '../config/config.json'))[env]; 
 
 const db = {};
 let sequelize;

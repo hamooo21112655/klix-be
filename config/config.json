@@ -3,8 +3,8 @@
     "username": "root",
     "password": "root",
     "database": "klix",
-    "host": "localhost",
-    "port": 5433,
+    "host": "db",
+    "port": 5432,
     "dialect": "postgres"
   },
   "test": {
@@ -18,7 +18,8 @@
     "username": "root",
     "password": "root",
     "database": "klix",
-    "host": "localhost",
+    "host": "db",
+    "port": 5432,
     "dialect": "postgres"
   }
 }
