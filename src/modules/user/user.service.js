@@ -5,7 +5,7 @@ const { getAllUsers } = require('./repository/query/get-users.query.js');
 
 const {
   createUserSchema,
-  isEmailOrPhoneNumberTaken
+  isEmailOrPhoneNumberTaken,
 } = require('./validations/create-user.validations.js');
 
 const { getUsersSchema } = require('./validations/get-users.validations.js');
@@ -14,7 +14,7 @@ const {
   throwUserNotFoundError,
   throwInvalidUserError,
   throwInvalidUserIdError,
-  throwEmailOrPhoneNumberTakenError
+  throwEmailOrPhoneNumberTakenError,
 } = require('./exceptions/bad-user-request.exception');
 const { getUsersByPhoneNumber } = require('./repository/query/get-user-by-phone-number.query');
 const { getUsersByEmail } = require('./repository/query/get-user-by-email.query');
@@ -72,7 +72,7 @@ const getUserByIdService = async (rawId) => {
 
   if (!user) {
     throwUserNotFoundError({
-      message: `User with id ${value?.id} not found.`
+      message: `User with id ${value?.id} not found.`,
     });
   }
 
@@ -87,18 +87,26 @@ const getUsersByEmailOrPhoneNumberService = async ({ phoneNumber, email }) => {
 
   if (!phoneNumber && !email) return [];
 
-  const usersByNumber = await getUsersByPhoneNumberService(phoneNumber || "");
+  const usersByNumber = await getUsersByPhoneNumberService(phoneNumber || '');
   if (usersByNumber.length > 0) {
     usersByEmailOrPhoneNumber.push(...usersByNumber);
   }
-  
-  const usersByEmail = await getUsersByEmailService(email || "");
+
+  const usersByEmail = await getUsersByEmailService(email || '');
   if (usersByEmail.length > 0) {
     usersByEmailOrPhoneNumber.push(...usersByEmail);
   }
 
   return usersByEmailOrPhoneNumber;
-}
+};
+
+const _getUserByEmailService = async (email) => {
+  return await getUsersByEmail(email);
+};
+
+const _createUserService = async (user) => {
+  return await createUser(user);
+};
 
 // soft delete-usera
 // alter tabele - migracija - deletedAt kolona
@@ -109,4 +117,6 @@ module.exports = {
   getUsersService,
   getUserByIdService,
   getUsersByPhoneNumberService,
+  _getUserByEmailService,
+  _createUserService,
 };

@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       last_name: { type: DataTypes.STRING },
       phone_number: { type: DataTypes.STRING },
       email: { type: DataTypes.STRING },
+      password: { type: DataTypes.STRING },
       user_type: { type: DataTypes.ENUM('AUTHOR', 'ADMIN'), allowNull: false },
     },
     {
