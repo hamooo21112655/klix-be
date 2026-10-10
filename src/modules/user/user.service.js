@@ -1,5 +1,6 @@
 const { createUser } = require('./repository/commands/create-user.commands.js');
 const { updateUser } = require('./repository/commands/update-user.commands.js');
+const { deleteUser } = require('./repository/commands/delete-user.commands.js');
 const { getUserById } = require('./repository/query/get-user-by-id.query.js');
 const { getAllUsers } = require('./repository/query/get-users.query.js');
 
@@ -18,7 +19,7 @@ const {
 } = require('./exceptions/bad-user-request.exception');
 const { getUsersByPhoneNumber } = require('./repository/query/get-user-by-phone-number.query');
 const { getUsersByEmail } = require('./repository/query/get-user-by-email.query');
-const { userIdSchema } = require('./validations/get-user-by-id.validations.js');
+const { userIdSchema, ensureUserExists } = require('./validations/get-user-by-id.validations.js');
 
 const createUserService = async (userDTO) => {
   const { error } = createUserSchema.validate(userDTO);
@@ -100,6 +101,22 @@ const getUsersByEmailOrPhoneNumberService = async ({ phoneNumber, email }) => {
   return usersByEmailOrPhoneNumber;
 };
 
+const deleteUserService = async (userId) => {
+  const { error: errorId } = userIdSchema.validate({ id: userId });
+
+  if (errorId) {
+    throwInvalidUserIdError(errorId);
+  }
+  const user = await getUserById(userId);
+  const { error } = ensureUserExists(user, userId);
+
+  if (error) {
+    throw error;
+  }
+
+  deleteUser(userId);
+};
+
 const _getUserByEmailService = async (email) => {
   return await getUsersByEmail(email);
 };
@@ -107,9 +124,6 @@ const _getUserByEmailService = async (email) => {
 const _createUserService = async (user) => {
   return await createUser(user);
 };
-
-// soft delete-usera
-// alter tabele - migracija - deletedAt kolona
 
 module.exports = {
   createUserService,
@@ -119,4 +133,5 @@ module.exports = {
   getUsersByPhoneNumberService,
   _getUserByEmailService,
   _createUserService,
+  deleteUserService,
 };

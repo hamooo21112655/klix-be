@@ -3,13 +3,17 @@ const { createArticle } = require('./repository/commands/create-article.commands
 const { updateArticle } = require('./repository/commands/update-article.commands');
 const { getArticles } = require('./repository/query/get-articles.query');
 const { getArticleById } = require('./repository/query/get-article-by-id.query');
-const { ensureArticleExists } = require('./validations/get-article-by-id.validations');
+const {
+  ensureArticleExists,
+  articleIdSchema,
+} = require('./validations/get-article-by-id.validations');
 const { getArticlesSchema } = require('./validations/get-articles.validations');
 const {
   throwInvalidArticleError,
   throwArticleNotFoundError,
 } = require('./exceptions/bad-article-request.exception');
 const { throwInvalidLimitOrPageError } = require('../user/exceptions/bad-user-request.exception');
+const { deleteArticle } = require('./repository/commands/delete-article.commands');
 
 const createArticleService = async (articleDTO) => {
   const { error } = createArticleSchema.validate(articleDTO);
@@ -45,9 +49,27 @@ const getArticleByIdService = async (articleId) => {
   return article;
 };
 
+const deleteArticleService = async (articleId) => {
+  const { error: errorId } = articleIdSchema.validate({ id: articleId });
+
+  if (errorId) {
+    throwInvalidArticleError(error);
+  }
+
+  const article = await getArticleById(articleId);
+  const { error } = ensureArticleExists(article, articleId);
+
+  if (error) {
+    throwArticleNotFoundError(error);
+  }
+
+  await deleteArticle(articleId);
+};
+
 module.exports = {
   getArticleByIdService,
   getAllArticlesService,
   createArticleService,
   updateArticleService,
+  deleteArticleService,
 };

@@ -14,11 +14,18 @@ module.exports = (sequelize, DataTypes) => {
       phone_number: { type: DataTypes.STRING },
       email: { type: DataTypes.STRING },
       password: { type: DataTypes.STRING },
-      user_type: { type: DataTypes.ENUM('AUTHOR', 'ADMIN'), allowNull: false },
+      user_type: {
+        type: DataTypes.ENUM('AUTHOR', 'ADMIN'),
+        allowNull: false,
+      },
     },
     {
       tableName: 'user',
-      timestamps: false,
+      timestamps: true,
+      paranoid: true,
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      deletedAt: 'deleted_at',
     }
   );
 
@@ -29,7 +36,9 @@ module.exports = (sequelize, DataTypes) => {
       otherKey: 'article_id',
     });
 
-    User.hasMany(models.Comment, { foreignKey: 'user_id' });
+    User.hasMany(models.Comment, {
+      foreignKey: 'user_id',
+    });
   };
 
   return User;
