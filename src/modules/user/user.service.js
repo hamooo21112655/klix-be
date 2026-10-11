@@ -108,9 +108,6 @@ const _createUserService = async (user) => {
   return await createUser(user);
 };
 
-// soft delete-usera
-// alter tabele - migracija - deletedAt kolona
-
 module.exports = {
   createUserService,
   updateUserService,

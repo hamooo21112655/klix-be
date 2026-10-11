@@ -19,15 +19,32 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       tableName: 'comment',
-      timestamps: false,
+      timestamps: true,
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      paranoid: true,
+      deletedAt: 'deleted_at',
     }
   );
 
   Comment.associate = (models) => {
-    Comment.belongsTo(models.Article, { foreignKey: 'article_id' });
-    Comment.belongsTo(models.User, { foreignKey: 'user_id' });
-    Comment.hasMany(models.Comment, { as: 'Replies', foreignKey: 'comment_id_parent' });
-    Comment.belongsTo(models.Comment, { as: 'Parent', foreignKey: 'comment_id_parent' });
+    Comment.belongsTo(models.Article, {
+      foreignKey: 'article_id',
+    });
+
+    Comment.belongsTo(models.User, {
+      foreignKey: 'user_id',
+    });
+
+    Comment.hasMany(models.Comment, {
+      as: 'Replies',
+      foreignKey: 'comment_id_parent',
+    });
+
+    Comment.belongsTo(models.Comment, {
+      as: 'Parent',
+      foreignKey: 'comment_id_parent',
+    });
   };
 
   return Comment;

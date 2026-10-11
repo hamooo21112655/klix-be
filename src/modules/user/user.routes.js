@@ -9,7 +9,7 @@ const {
 const userRouter = express.Router();
 
 userRouter.post('/', async (req, res) => {
-  console.log("added neww user")
+  console.log('added neww user');
   try {
     const newUser = await createUserService(req.body);
     return res.status(200).json({ message: 'Added new user', newUser });
@@ -39,7 +39,7 @@ userRouter.get('/:id', async (req, res) => {
 });
 
 userRouter.put('/:id', async (req, res) => {
-  const rawId = req.params.id; 
+  const rawId = req.params.id;
   try {
     const updatedUser = await updateUserService(rawId, req.body);
     return res.status(200).json({ message: 'User updated successfully', updatedUser });
@@ -47,10 +47,6 @@ userRouter.put('/:id', async (req, res) => {
     return res.status(err.status || 400).json({ error: err.message });
   }
 });
-
-// login
-// registracija
-// reset password
 
 module.exports = {
   userRouter,
