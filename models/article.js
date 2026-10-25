@@ -27,7 +27,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       tableName: 'article',
-      timestamps: false,
+      timestamps: true,
+      paranoid: true,
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      deletedAt: 'deleted_at',
     }
   );
 
@@ -38,7 +42,9 @@ module.exports = (sequelize, DataTypes) => {
       otherKey: 'user_id',
     });
 
-    Article.hasMany(models.Comment, { foreignKey: 'article_id' });
+    Article.hasMany(models.Comment, {
+      foreignKey: 'article_id',
+    });
   };
 
   return Article;

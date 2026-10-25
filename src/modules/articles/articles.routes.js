@@ -3,6 +3,7 @@ const {
   getAllArticlesService,
   getArticleByIdService,
   updateArticleService,
+  deleteArticleService,
 } = require('./articles.service');
 
 const express = require('express');
@@ -48,6 +49,16 @@ articleRouter.get('/:id', async (req, res) => {
     return res.status(200).json(article);
   } catch (err) {
     return res.status(err.status).json({ error: err.message });
+  }
+});
+
+articleRouter.delete('/:id', async (req, res) => {
+  const rawId = req.params.id;
+  try {
+    await deleteArticleService(rawId);
+    return res.status(204).json({ message: 'Article deleted successfully' });
+  } catch (err) {
+    return res.status(err.status || 400).json({ error: err.message });
   }
 });
 
